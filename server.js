@@ -21,9 +21,6 @@ app.post("/new", asyncHandler(async (req, res) => {
     // coffee name
     
 
-
-
-
     const {front, back} = req.body
     const newCard = new Flashcard({front, back});
     newCard.save();
@@ -65,8 +62,8 @@ app.get("/delete/:id", asyncHandler(async (req, res) => {
 async function start() {
     await connectToDB();
 
-    return app.listen(3000, () => {
-        console.log("Listening on port 3000");
+    return app.listen(3003, () => {
+        console.log("Listening on port 3003");
     });
 }
 

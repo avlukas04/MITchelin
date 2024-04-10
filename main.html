@@ -15,13 +15,13 @@
         <button onclick="getRecommendations()">Get Recommendations</button>
     </div>
 
-    <script>
-        function getRecommendations() {
-            var location = document.getElementById('location').value;
-            alert('Fetching recommendations for: ' + location);
-            // Here, you can add the code to fetch restaurant recommendations based on the location
-            // This can be done using AJAX or Fetch API to interact with a backend server
-        }
+    <script type="module" src="/server.js">
+        // function getRecommendations() {
+        //     var location = document.getElementById('location').value;
+        //     alert('Fetching recommendations for: ' + location);
+        //     // Here, you can add the code to fetch restaurant recommendations based on the location
+        //     // This can be done using AJAX or Fetch API to interact with a backend server
+        // }
     </script>
 </body>
 </html>
