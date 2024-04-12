@@ -2,7 +2,7 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { connectToDB, Flashcard } = require("./database");
+const { connectToDB, Coffee } = require("./database");
 
 const app = express();
 
@@ -17,44 +17,44 @@ app.use(express.static(__dirname + "/public"));
 
 // QUESTION 5. Finish this route handler that creates a new card, with "front" and "back" from the POST request body.
 // Hint: Create a new Flashcard and save it to the database. Make sure to await asynchronous functions!
-app.post("/new", asyncHandler(async (req, res) => {
-    // coffee name
-    
-
-    const {front, back} = req.body
-    const newCard = new Flashcard({front, back});
-    newCard.save();
-    res.status(201).json(newCard);
-}));
-
-// QUESTION 6. Write a route handler for "GET /cards" that finds all flashcards and returns them as a JSON array.
-// Hint: This should only need a few lines of code! Call a mongoose method and send back its result using res.something().
-app.get("/cards", asyncHandler(async (req, res) => {
-    const cards = await Flashcard.find(); 
-    res.json(cards); 
+// post info about coffee
+app.post("/new-coffee", asyncHandler(async (req, res) => {
+    const { name, espresso, milk, foMilk, iceOrHot, sugarLv, caffineLv, size, crashLv } = req.body;
+    const newCoffee = new Coffee({ name, espresso, milk, foMilk, iceOrHot, sugarLv, caffineLv, size, crashLv });
+    await newCoffee.save(); // Ensure this operation is awaited
+    // newCoffee.save(); // Ensure this operation is awaited
+    res.status(201).json(newCoffee);
 }));
 
 
-// QUESTION 7. Finish this route handler that finds a card by its id and returns it as JSON.
-app.get("/card/:id", asyncHandler(async (req, res) => {
+// gets all coffee
+app.get("/coffees", asyncHandler(async (req, res) => {
+    const coffees = await Coffee.find();
+    res.json(coffees);
+}));
+
+
+// gets 1 coffee based on crash level
+app.get("/coffee/:id", asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const card = await Flashcard.findById(id);
-    if (!card) {
-        return res.status(404).json({ error: "Flashcard Not Found" }); // Set status to 404 if not found
+    const coffee = await Coffee.findById(id);
+    if (!coffee) {
+        return res.status(404).json({ error: "Coffee Not Found" });
     }
-    res.json(card);
+    res.json(coffee);
 }));
+
 
 // QUESTION 8. Write a route handler for "GET /delete/:id" to delete a card by its id and return the deleted data.
 // Try googling what the mongoose method could be or check the lab slides!
 // Hint: This will be similar to the previous question.
 app.get("/delete/:id", asyncHandler(async (req, res) => {
     const id = req.params.id; 
-    const card = await Flashcard.findByIdAndDelete(id); 
-    if (!card) {
-        return res.status(404).json({ error: "Flashcard Not Found" }); // Set status to 404 if not found
+    const coffee = await Coffee.findByIdAndDelete(id); 
+    if (!coffee) {
+        return res.status(404).json({ error: "Coffee Not Found" }); // Set status to 404 if not found
     }
-    res.json(card);
+    res.json(coffee);
 }));
 
 

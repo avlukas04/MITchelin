@@ -1,0 +1,48 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>MITchelin - Restaurant Recommendations</title>
+   <link rel="stylesheet" href="styles.CSS">
+</head>
+<body>
+   <div class="container">
+       <h1>MITchelin - Find Your Flavor!</h1>
+       <p>Enter your location to get restaurant recommendations:</p>
+       <!-- <label for="location">Location:</label>
+       <input type="text" id="location" name="location" placeholder="Enter your city or ZIP code"> -->
+       <button onclick="getRecommendations()">:></button>
+   </div>
+   
+   <dialog id="add-dialog" onclick="event.target === this && this.close()">
+    <article>
+        <header>
+            <h2>Add a Flashcard ✨</h2>
+            <button aria-label="Close" rel="prev" id="close"></button>
+        </header>
+
+        <label>Front of Card</label>
+        <input type="text" id="front-input" autofocus>
+
+        <label>Back of Card</label>
+        <input type="text" id="back-input">
+
+        <footer>
+            <button type="submit" id="submit">Submit</button>
+        </footer>
+    </article>
+    </dialog>
+
+   <script>
+       function getRecommendations() {
+           var location = document.getElementById('location').value;
+           alert('Fetching recommendations for: ' + location);
+           // Here, you can add the code to fetch restaurant recommendations based on the location
+           // This can be done using AJAX or Fetch API to interact with a backend server
+       }
+   </script>
+</body>
+</html>

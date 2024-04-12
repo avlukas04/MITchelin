@@ -11,15 +11,23 @@ const dbConnectionUri = 'mongodb+srv://andrealukas24:yahSEKI00@cluster0.upjp0bk.
 const dbName = "coffee";
 
 // QUESTION 3. Create a new mongoose.Schema with two String properties: "front" and "back".
-const flashcardSchema = new mongoose.Schema({
-    front: String,
-    back: String
+const coffeeSchema = new mongoose.Schema({
+    name: String,
+    espresso: String,
+    milk: String,
+    foMilk: String,
+    iceOrHot: String,
+    sugarLv: String,
+    caffineLv: String,
+    size: Number,
+    crashLv: String
 });
+
 
 // QUESTION 4. Create a mongoose.model with the schema you just created.
 // Note: The first parameter should match the model name (capitalized, not plural, i.e. "Flashcard"),
 //       as mongoose automatically converts it to a plural collection name (i.e. "Flashcard" -> "flashcards")
-const Flashcard = mongoose.model('Flashcard', flashcardSchema);
+const Coffee = mongoose.model('Coffee', coffeeSchema);
 
 // Connects to database with the connection string and database name specified above
 async function connectToDB() {
@@ -28,4 +36,4 @@ async function connectToDB() {
 }
 
 // Exports the connect function and the Flashcard model to use in `server.js`
-module.exports = { connectToDB, Flashcard };
+module.exports = { connectToDB, Coffee };
