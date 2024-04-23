@@ -57,6 +57,17 @@ app.get("/delete/:id", asyncHandler(async (req, res) => {
     res.json(coffee);
 }));
 
+app.get("/random-coffee", asyncHandler(async (req, res) => {
+    const randomCoffee = await Coffee.aggregate([
+        { $sample: { size: 1 } }
+    ]);
+    if (randomCoffee.length > 0) {
+        res.json(randomCoffee[0]);
+    } else {
+        res.status(404).send("No coffee found.");
+    }
+}));
+
 
 // connects to the database and starts the server
 async function start() {

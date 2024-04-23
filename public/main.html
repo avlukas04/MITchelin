@@ -9,13 +9,6 @@
    <link rel="stylesheet" href="styles.CSS">
 </head>
 <body>
-   <div class="container">
-       <h1>MITchelin - Find Your Flavor!</h1>
-       <p>Enter your location to get restaurant recommendations:</p>
-       <!-- <label for="location">Location:</label>
-       <input type="text" id="location" name="location" placeholder="Enter your city or ZIP code"> -->
-       <button onclick="getRecommendations()">:></button>
-   </div>
    
    <dialog id="add-dialog" onclick="event.target === this && this.close()">
     <article>
@@ -36,13 +29,48 @@
     </article>
     </dialog>
 
+    <div class="container">
+        <h1>MITchelin - Find Your Flavor!</h1>
+        <p>Click For YOUR Coffee of the Day :</p>
+        <button id="fetchRandomCoffee" onclick="getRandomCoffee()">:></button>
+        <div id="coffeeDetails"></div> <!-- Element to display coffee details -->
+    </div>
+    
+
    <script>
-       function getRecommendations() {
-           var location = document.getElementById('location').value;
-           alert('Fetching recommendations for: ' + location);
-           // Here, you can add the code to fetch restaurant recommendations based on the location
-           // This can be done using AJAX or Fetch API to interact with a backend server
-       }
+    function getRandomCoffee() {
+        fetch('http://localhost:3003/random-coffee')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(coffee => {
+                // Update the content of the coffeeDetails div with information about the coffee
+                const coffeeDetails = document.getElementById('coffeeDetails');
+                if (coffee) {
+                    coffeeDetails.innerHTML = `<strong>Name:</strong> ${coffee.name}<br>
+                                            <strong>Espresso:</strong> ${coffee.espresso}<br>
+                                            <strong>Milk:</strong> ${coffee.milk}<br>
+                                            <strong>Foamed Milk:</strong> ${coffee.foMilk}<br>
+                                            <strong>Hot or Iced:</strong> ${coffee.iceOrHot}<br>
+                                            <strong>Sugar Level:</strong> ${coffee.sugarLv}<br>
+                                            <strong>Caffeine Level:</strong> ${coffee.caffineLv}<br>
+                                            <strong>Size:</strong> ${coffee.size}<br>
+                                            <strong>Crash Level:</strong> ${coffee.crashLv}`;
+                } else {
+                    coffeeDetails.innerHTML = '<strong>No coffee found.</strong>';
+                }
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+                document.getElementById('coffeeDetails').innerHTML = 'Failed to fetch random coffee: ' + error.message;
+            });
+}
    </script>
+
+
+
 </body>
 </html>
