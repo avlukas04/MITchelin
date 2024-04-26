@@ -1,76 +1,32 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>MITchelin - Restaurant Recommendations</title>
-   <link rel="stylesheet" href="styles.CSS">
+   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-   
-   <dialog id="add-dialog" onclick="event.target === this && this.close()">
-    <article>
-        <header>
-            <h2>Add a Flashcard ✨</h2>
-            <button aria-label="Close" rel="prev" id="close"></button>
-        </header>
-
-        <label>Front of Card</label>
-        <input type="text" id="front-input" autofocus>
-
-        <label>Back of Card</label>
-        <input type="text" id="back-input">
-
-        <footer>
-            <button type="submit" id="submit">Submit</button>
-        </footer>
-    </article>
-    </dialog>
-
     <div class="container">
-        <h1>MITchelin - Find Your Flavor!</h1>
-        <p>Click For YOUR Coffee of the Day :</p>
-        <button id="fetchRandomCoffee" onclick="getRandomCoffee()">:></button>
-        <div id="coffeeDetails"></div> <!-- Element to display coffee details -->
+        <h1>MITchelin</h1>
+        <p>(°∀°)ﾉ Hello.</p>
+        <p>Click the Button Below for Your Coffee of the Day, With Your Preferred Crash Level ✿ヽ(°▽°)ノ✿</p>
+        <!-- <label for="crash-level"> Choose Your Preferred Crash Level:</label> -->
+        <select id="crash-level">
+            <option value="little">Little (50-79mg caffeine)</option>
+            <option value="some">Some (80-109mg caffeine)</option>
+            <option value="medium" selected>Medium (110-139mg caffeine)</option>
+            <option value="a lot">A Lot (140-169mg caffeine)</option>
+            <option value="supreme">Supreme (170-200mg caffeine)</option>
+        </select>
+        <button id="fetchRandomCoffee" onclick="getRandomCoffee()">Find Coffee</button>
+        <div id="loading" style="display:none;">Loading...</div>
+        <div id="coffeeDisplay" class="coffee-display" style="display:none;"> <!-- initially hidden -->
+            <img id="coffeeImage" src="" alt="Coffee Image" class="coffee-image">
+            <div id="coffeeDetails" class="coffee-details"></div>
+        </div>
     </div>
     
-
-   <script>
-    function getRandomCoffee() {
-        fetch('http://localhost:3003/random-coffee')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(coffee => {
-                // Update the content of the coffeeDetails div with information about the coffee
-                const coffeeDetails = document.getElementById('coffeeDetails');
-                if (coffee) {
-                    coffeeDetails.innerHTML = `<strong>Name:</strong> ${coffee.name}<br>
-                                            <strong>Espresso:</strong> ${coffee.espresso}<br>
-                                            <strong>Milk:</strong> ${coffee.milk}<br>
-                                            <strong>Foamed Milk:</strong> ${coffee.foMilk}<br>
-                                            <strong>Hot or Iced:</strong> ${coffee.iceOrHot}<br>
-                                            <strong>Sugar Level:</strong> ${coffee.sugarLv}<br>
-                                            <strong>Caffeine Level:</strong> ${coffee.caffineLv}<br>
-                                            <strong>Size:</strong> ${coffee.size}<br>
-                                            <strong>Crash Level:</strong> ${coffee.crashLv}`;
-                } else {
-                    coffeeDetails.innerHTML = '<strong>No coffee found.</strong>';
-                }
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-                document.getElementById('coffeeDetails').innerHTML = 'Failed to fetch random coffee: ' + error.message;
-            });
-}
-   </script>
-
-
-
+   <script src="script.js"></script>
 </body>
 </html>

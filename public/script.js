@@ -1,132 +1,58 @@
-const cardEl = document.querySelector(".card");
-const frontTextEl = document.querySelector(".card-front");
-const backTextEl = document.querySelector(".card-back");
+let allCoffees = [];
 
-const nextBtn = document.querySelector("#next");
-const prevBtn = document.querySelector("#prev");
-const deleteBtn = document.querySelector("#delete");
-const addBtn = document.querySelector("#add");
-const randomBtn = document.querySelector("#randomize");
-
-const addDialog = document.querySelector("#add-dialog");
-const frontInput = document.querySelector("#front-input");
-const backInput = document.querySelector("#back-input");
-const submitBtn = document.querySelector("#submit");
-const closeBtn = document.querySelector("#close");
-
-async function fetchJson(path, options = {}) {
-    // TODO: handle errors
-    const response = await fetch(path, options);
-    const data = await response.json();
-    return data;
+function fetchAllCoffees() {
+    fetch('http://localhost:3003/coffees')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(coffees => {
+            allCoffees = coffees; // Store all coffee data
+        })
+        .catch(error => {
+            console.error('Failed to fetch all coffees:', error);
+        });
 }
 
-async function postJson(path, body) {
-    return fetchJson(path, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    });
-}
+function getRandomCoffee() {
+    const coffeeDisplay = document.getElementById('coffeeDisplay');
+    const coffeeDetails = document.getElementById('coffeeDetails');
+    const coffeeImage = document.getElementById('coffeeImage');
+    const loading = document.getElementById('loading');
+    const crashLevelSelect = document.getElementById('crash-level');
+    const selectedCrashLevel = crashLevelSelect.options[crashLevelSelect.selectedIndex].value;
 
-function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+    loading.style.display = 'block';
+    coffeeDetails.innerHTML = '';
+    coffeeImage.src = ''; // Clear previous image
+    coffeeImage.alt = 'Loading image...';
+    coffeeDisplay.style.display = 'none'; // Hide until coffee is found
 
-const getCards = () => fetchJson("/coffees");
-const getCardById = (id) => fetchJson(`/coffee/${id}`);
-const addCard = (
-    name,
-    espresso,
-    milk,
-    foMilk,
-    iceOrHot,
-    sugarLv,
-    caffineLv,
-    size,
-    crashLv) => postJson("/new", {
-    name,
-    espresso,
-    milk,
-    foMilk,
-    iceOrHot,
-    sugarLv,
-    caffineLv,
-    size,
-    crashLv });
-const deleteCardById = (id) => fetchJson(`/delete/${id}`);
+    const filteredCoffees = allCoffees.filter(coffee => coffee.crashLv.toLowerCase() === selectedCrashLevel);
 
-let allCards = [];
-let cardIndex = -1;
-
-async function updateCards() {
-    allCards = await getCards();
-
-    for (const btn of [nextBtn, prevBtn, deleteBtn, randomBtn]) {
-        btn.disabled = allCards.length === 0;
-    }
-
-    showCard(cardIndex);
-}
-
-function showCard(newIndex) {
-    if (newIndex >= allCards.length) newIndex = 0;
-    if (newIndex <= -1) newIndex = allCards.length - 1;
-
-    cardIndex = newIndex;
-
-    let backText;
-
-    if (allCards.length === 0 || cardIndex === -1) {
-        frontTextEl.innerHTML = "Welcome to your Flashcard App!\n<small>(click to flip card)</small>";
-        backText = "Get started by adding a Flashcard...";
+    if (filteredCoffees.length > 0) {
+        const randomCoffee = filteredCoffees[Math.floor(Math.random() * filteredCoffees.length)];
+        coffeeDetails.innerHTML = `
+            <div class="Detail">Your Coffee of the Day Is <strong>${randomCoffee.name}</Strong>.</Div>
+            <Div Class=”Detail”>Below Is a Composition of a Standard ${randomCoffee.size} of Your Coffee:</Div>
+            <Div Class=”Detail ”><strong>${randomCoffee.espresso}</Strong> Espresso</Div>
+            <Div Class=”Detail”><strong>${randomCoffee.steamedMilk}</Strong> Steamed Milk</Div>
+            <Div Class=”Detail”><strong>${randomCoffee.milkFoam}</Strong> Milk Foam</Div>
+            <Div Class=”Detail”>Recommended Optional Add-Ons: <strong>${randomCoffee.optionalAddOns}</Strong></Div>
+            <Div Class=”Detail”>It Contains <strong>${randomCoffee.caffineLv}</Strong> of Caffeine.</Div>
+            <br><br><!-- Adding 2 line breaks for spacing -->
+            <div class="Detail" style="font-size: 8px;">Add-Ons Is a MUST DO If It Says "fill the remaining ..."</div>`; // Always included
+                        
+        coffeeImage.src = randomCoffee.img; // Set image source from the coffee data
+        coffeeImage.alt = `Image of ${randomCoffee.name}`; // Set appropriate alt text
+        coffeeDisplay.style.display = 'flex'; // Show coffee details and image
     } else {
-        frontTextEl.textContent = allCards[cardIndex].front;
-        backText = allCards[cardIndex].back;
+        coffeeDetails.innerHTML = '<strong>No coffee found that matches the specified crash level.</strong>';
+        coffeeDisplay.style.display = 'block'; // Show message only
     }
-
-    if (cardEl.classList.contains("reveal")) {
-        cardEl.classList.remove("reveal");
-
-        // wait for the card animation to finish before showing the back
-        // (somewhat error-prone way to do this, but it works for our purposes)
-        setTimeout(() => (backTextEl.textContent = backText), 800);
-    } else {
-        backTextEl.textContent = backText;
-    }
+    loading.style.display = 'none';
 }
 
-nextBtn.addEventListener("click", () => showCard(cardIndex + 1));
-prevBtn.addEventListener("click", () => showCard(cardIndex - 1));
-cardEl.addEventListener("click", () => cardEl.classList.toggle("reveal"));
-
-addBtn.addEventListener("click", () => addDialog.showModal());
-closeBtn.addEventListener("click", () => addDialog.close());
-
-submitBtn.addEventListener("click", async () => {
-    const frontText = frontInput.value.trim();
-    const backText = backInput.value.trim();
-
-    if (frontText === "" || backText === "") return;
-
-    await addCard(frontText, backText);
-    await updateCards();
-
-    frontInput.value = "";
-    backInput.value = "";
-
-    addDialog.close();
-});
-
-deleteBtn.addEventListener("click", async () => {
-    await deleteCardById(allCards[cardIndex]._id);
-    await updateCards();
-});
-
-randomBtn.addEventListener("click", () => {
-    showCard(randomInteger(0, allCards.length - 1));
-});
-
-updateCards();
+document.addEventListener('DOMContentLoaded', fetchAllCoffees);

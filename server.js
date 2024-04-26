@@ -19,8 +19,8 @@ app.use(express.static(__dirname + "/public"));
 // Hint: Create a new Flashcard and save it to the database. Make sure to await asynchronous functions!
 // post info about coffee
 app.post("/new-coffee", asyncHandler(async (req, res) => {
-    const { name, espresso, milk, foMilk, iceOrHot, sugarLv, caffineLv, size, crashLv } = req.body;
-    const newCoffee = new Coffee({ name, espresso, milk, foMilk, iceOrHot, sugarLv, caffineLv, size, crashLv });
+    const { name, espresso, steamedMilk, milkFoam, caffineLv, crashLv, optionalAddOns } = req.body;
+    const newCoffee = new Coffee({ name, espresso, steamedMilk, milkFoam, caffineLv, crashLv, optionalAddOns });
     await newCoffee.save(); // Ensure this operation is awaited
     // newCoffee.save(); // Ensure this operation is awaited
     res.status(201).json(newCoffee);

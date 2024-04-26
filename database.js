@@ -14,13 +14,11 @@ const dbName = "coffee";
 const coffeeSchema = new mongoose.Schema({
     name: String,
     espresso: String,
-    milk: String,
-    foMilk: String,
-    iceOrHot: String,
-    sugarLv: String,
+    steamedMilk: String,
+    milkFoam: String,
     caffineLv: String,
-    size: Number,
-    crashLv: String
+    crashLv: String,
+    optionalAddOns: String
 });
 
 
